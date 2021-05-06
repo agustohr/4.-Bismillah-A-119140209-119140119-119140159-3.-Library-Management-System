@@ -1,0 +1,44 @@
+create table library(
+	library_id int(2),
+	library_name varchar(50),
+	PRIMARY KEY (library_id)
+)ENGINE = InnoDB;
+
+create table items(
+	item_id int(2),
+	library_id int(2),
+	category varchar(50),
+	title varchar(200),
+	author varchar(100),
+	publisher varchar(50),
+	production_year int(5),
+	copies int(5),
+	PRIMARY KEY (item_id),
+	FOREIGN KEY (library_id) REFERENCES library (library_id)
+	ON DELETE RESTRICT
+	ON UPDATE CASCADE
+)ENGINE = InnoDB;
+
+create table subscribers(
+	subscriber_id int(2),
+	type varchar(50),
+	name varchar(50),
+	address varchar(200),
+	phone varchar(15),
+	email varchar(100),
+	PRIMARY KEY (subscriber_id)
+)ENGINE = InnoDB;
+
+create table borrowing(
+	subscriber_id int(2),
+	borrow_date date,
+	item_id int(2),
+	return_date date,
+	fee int(50),
+	FOREIGN KEY (item_id) REFERENCES items (item_id)
+	ON DELETE RESTRICT
+	ON UPDATE CASCADE,
+	FOREIGN KEY (subscriber_id) REFERENCES subscribers (subscriber_id)
+	ON DELETE RESTRICT
+	ON UPDATE CASCADE
+)ENGINE = InnoDB;
