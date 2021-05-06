@@ -1,0 +1,16 @@
+INSERT INTO library VALUES
+	(1, 'Main Campus Library'),
+	(2, 'Computer Science Library'),
+	(3, 'Engineering Library');
+
+INSERT INTO items VALUES
+	(1, 1, 'Book', 'Introduction to Java Programming', 'Daniel Liang', 'Pearson', 2018, 10),
+	(2, 2, 'Article On Journal', 'A Novel Approach for Making Recommendation using Skyline Query based on user Location and Preference', 'Sanket Shah*, Amit Thakkar and Sonal Rami', 'Indian Journal of Science and Technology', 2020, 3),
+	(3, 2, 'Digital Media', 'Essential Logic for Computer Science', '
+Rex Page, Ruben Gamboa', '
+MIT Press', 2019, 1),
+	(4, 1, 'Digital Media', 'Pemasaran Sosial Kesehatan', 'Siti Uswatun Chasanah', 'Deepublish', 2013, 5),
+	(5, 3, 'Article On Journal', 'STEAM (Science, Technology, Engineering, Arts, and Mathematics): 
+Pembelajaran untuk Memberdayakan Keterampilan Abad ke-21', 'Siti Zubaidah', 'FMIPA – Universitas Negeri Malang', 2019, 4),
+	(6, 2, 'Book', "SOFTWARE ENGINEERING: A PRACTITIONER’S APPROACH, EIGHTH EDITION", 'Roger S. Pressman, Ph.D. dan Bruce R. Maxim, Ph.D.', 'McGraw-Hill Education', 2015, 10),
+	(7, 3, 'Book', "SOFTWARE ENGINEERING: A PRACTITIONER’S APPROACH, SEVENTH EDITION", 'Roger S. Pressman, Ph.D.', 'McGraw-Hill Education', 2010, 15);
