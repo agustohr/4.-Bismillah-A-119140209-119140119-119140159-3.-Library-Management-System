@@ -16,7 +16,7 @@ class Library :
 
 # class Items(Library) :
 #     mycursor = db.cursor()
-#     sql = "INSERT INTO items (item_id, library_id, category, title) VALUES (%s, %s)"
+#     sql = "INSERT INTO items (item_id, library_id, category, title, author, publisher, production_year, ) VALUES (%s, %s)"
 #     val = (2, "Book")
 #     mycursor.execute(sql, val)
 
