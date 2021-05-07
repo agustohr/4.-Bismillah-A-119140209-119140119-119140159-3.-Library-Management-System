@@ -7,7 +7,7 @@ db = mysql.connect(
     database='library_management_system'
 )
 
-
+mycursor = db.cursor()
 mycursor.execute("SELECT * FROM library")
 myresult = mycursor.fetchall()
 for x in myresult:
@@ -16,6 +16,7 @@ for x in myresult:
 a = input(int('insert library_id : '))
 
 class Items :
+    mycursor = db.cursor()
     mycursor.execute("SELECT * FROM items WHERE pilih ")
     myresult = mycursor.fetchall()
     
