@@ -77,12 +77,13 @@ def Countdate(db):
     # elif val == 'golden' :
 
 def Menu(db):
-    print("=== Menu ===")
-    print("1. Show Items")
-    print("2. Register Subscriber")
-    print("3. Borrowing")
-    print("4. Keluar")
-    pilih_menu = input("Pilih Menu : ")
+    print('=== WELCOME TO LIBRARY MANAGEMENT SYSTEM ===')
+    print("=== Library Menu ===")
+    print("1. Show Library Items")
+    print("2. Register as Subscriber")
+    print("3. Borrow Books")
+    print("4. Exit")
+    pilih_menu = input("Choose Menu : ")
 
     if pilih_menu == "1":
     	Library(db)
@@ -95,7 +96,7 @@ def Menu(db):
     elif pilih_menu == "4":
         exit()
     else:
-        print("Menu Salah")
+        print("You inputed the wrong menu, please try again")
 
 while(True):
 	Menu(db)
