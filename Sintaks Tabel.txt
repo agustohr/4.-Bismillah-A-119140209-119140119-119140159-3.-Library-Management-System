@@ -30,6 +30,7 @@ create table subscribers(
 )ENGINE = InnoDB;
 
 create table borrowing(
+	borrowing_id int(2) PRIMARY KEY,
 	subscriber_id int(2),
 	borrow_date date,
 	item_id int(2),
