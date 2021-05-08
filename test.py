@@ -55,13 +55,13 @@ def Borrowing(db):
     db.commit()
     print("{} data berhasil disimpan".format(mycursor.rowcount))
 
-def Countdate(db):
+def Returning(db):
     id_borrow = int(input("Borrowing ID : "))
     return_date = input("Returning date : ")
     mycursor = db.cursor()
     val = (return_date, id_borrow)
     sql = "UPDATE borrowing SET return_date = (%s) WHERE borrowing_id = (%s)"
-    mycursor.execute(sql,val)
+    mycursor.execute(sql, val)
     db.commit()
     print("{} data berhasil disimpan".format(mycursor.rowcount))
 
@@ -79,10 +79,11 @@ def Countdate(db):
 def Menu(db):
     print('=== WELCOME TO LIBRARY MANAGEMENT SYSTEM ===')
     print("=== Library Menu ===")
-    print("1. Show Library Items")
-    print("2. Register as Subscriber")
-    print("3. Borrow Books")
-    print("4. Exit")
+    print("1. List of Library")
+    print("2. Register Subscriber")
+    print("3. Borrowing")
+    print("4. Returning")
+    print("5. Keluar")
     pilih_menu = input("Choose Menu : ")
 
     if pilih_menu == "1":
@@ -92,8 +93,9 @@ def Menu(db):
     	Subscribers(db)
     elif pilih_menu == "3":
         Borrowing(db)
-        Countdate(db)
     elif pilih_menu == "4":
+        Returning(db)
+    elif pilih_menu == "5":
         exit()
     else:
         print("You inputed the wrong menu, please try again")
