@@ -41,6 +41,41 @@ def Subscribers(db):
     db.commit()
     print("{} data berhasil disimpan".format(mycursor.rowcount))
 
+def Borrowing(db):
+    print("Insert data borrowing\n")
+    id_borrow = int(input("Borrowing ID : "))
+    id_subs = int(input("Subscriber ID : "))
+    borrow_date = input("Borrowing date : ")
+    item_id = input("Item id : ")
+    
+    mycursor = db.cursor()
+    val = (id_borrow, id_subs, item_id, borrow_date)
+    sql = "INSERT INTO borrowing (borrowing_id, subscriber_id, item_id, borrow_date) VALUES (%s, %s, %s, %s)"
+    mycursor.execute(sql,val)
+    db.commit()
+    print("{} data berhasil disimpan".format(mycursor.rowcount))
+
+def Countdate(db):
+    id_borrow = int(input("Borrowing ID : "))
+    return_date = input("Returning date : ")
+    mycursor = db.cursor()
+    val = (return_date, id_borrow)
+    sql = "UPDATE borrowing SET return_date = (%s) WHERE borrowing_id = (%s)"
+    mycursor.execute(sql,val)
+    db.commit()
+    print("{} data berhasil disimpan".format(mycursor.rowcount))
+
+    # sql = "SELECT datediff(return_date,borrow_date) FROM borrowing WHERE borrowing_id = (%s)
+    # val = [pilih]
+    # mycursor.execute(sql,val)
+    # myresult = mycursor.fetchall()
+    
+    # if val == 'regular' :
+    #     tgl1 = borrow_date.dd()
+    #     tgl1 + 
+    
+    # elif val == 'golden' :
+
 def Menu(db):
     print("=== Menu ===")
     print("1. Show Items")
@@ -55,7 +90,8 @@ def Menu(db):
     elif pilih_menu == "2":
     	Subscribers(db)
     elif pilih_menu == "3":
-        pass
+        Borrowing(db)
+        Countdate(db)
     elif pilih_menu == "4":
         exit()
     else:
