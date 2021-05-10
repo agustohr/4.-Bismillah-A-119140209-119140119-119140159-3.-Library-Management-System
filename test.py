@@ -42,6 +42,15 @@ def Subscribers(db):
     print("{} data berhasil disimpan".format(mycursor.rowcount))
 
 def Borrowing(db):
+    def hasil(a, db):
+    	mycursor = db.cursor()
+    	val1 = [a]
+        sql1 = "SELECT item_id, library_id, title FROM items NATURAL JOIN borrowing WHERE borrowing_id = (%s)"
+        mycursor.execute(sql1, val1)
+        myresult = mycursor.fetchall()
+        print("Anda meminjam: ")
+        print(tabulate(myresult, headers=["item_id", "library_id", "title"], tablefmt="grid"))
+	
     print("Insert data borrowing\n")
     id_borrow = int(input("Borrowing ID : "))
     id_subs = int(input("Subscriber ID : "))
@@ -53,6 +62,7 @@ def Borrowing(db):
     sql = "INSERT INTO borrowing (borrowing_id, subscriber_id, item_id, borrow_date) VALUES (%s, %s, %s, %s)"
     mycursor.execute(sql,val)
     db.commit()
+    hasil(id_borrow, db)
     print("{} data berhasil disimpan".format(mycursor.rowcount))
 
 def Returning(db):
