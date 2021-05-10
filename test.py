@@ -26,7 +26,7 @@ def Items(db):
     print(tabulate(myresult, headers=["item_id","library_id","category","title","author","publisher","production_year","copies"], tablefmt="grid"))
 
 def Subscribers(db):
-    print("Insert data subscriber\n")
+    print("Insert new subscriber")
     id_subs = input("Subscriber ID : ")
     tipe = input("Type : ")
     name = input("Name : ")
@@ -51,7 +51,7 @@ def Borrowing(db):
         print("Anda meminjam: ")
         print(tabulate(myresult, headers=["item_id", "library_id", "title"], tablefmt="grid"))
 	
-    print("Insert data borrowing\n")
+    print("Insert data borrowing")
     id_borrow = int(input("Borrowing ID : "))
     id_subs = int(input("Subscriber ID : "))
     borrow_date = input("Borrowing date : ")
@@ -66,6 +66,14 @@ def Borrowing(db):
     print("{} data berhasil disimpan".format(mycursor.rowcount))
 
 def Returning(db):
+    def hasil(db, a):
+        mycursor = db.cursor()
+        val = [a]
+        sql = "SELECT DATEDIFF(return_date, borrow_date) FROM borrowing WHERE borrowing_id = (%s)"
+        mycursor.execute(sql, val)
+        myresult = mycursor.fetchall()
+	print(tabulate(myresult, headers=["overdue 'day(s)'"], tablefmt="grid"))
+	
     id_borrow = int(input("Borrowing ID : "))
     return_date = input("Returning date : ")
     mycursor = db.cursor()
@@ -73,12 +81,8 @@ def Returning(db):
     sql = "UPDATE borrowing SET return_date = (%s) WHERE borrowing_id = (%s)"
     mycursor.execute(sql, val)
     db.commit()
-    print("{} data berhasil disimpan".format(mycursor.rowcount))
-
-    # sql = "SELECT datediff(return_date,borrow_date) FROM borrowing WHERE borrowing_id = (%s)
-    # val = [pilih]
-    # mycursor.execute(sql,val)
-    # myresult = mycursor.fetchall()
+    hasil(db, id_borrow)
+    print("{} item returned\n".format(mycursor.rowcount))
     
     # if val == 'regular' :
     #     tgl1 = borrow_date.dd()
