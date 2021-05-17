@@ -91,7 +91,7 @@ def Subscribers(db):
         elif pilih == "4":
             Delete(db)
         elif pilih == "5":
-            break
+            pass
         else :
             print("You inputed the wrong menu, please try again")
 
