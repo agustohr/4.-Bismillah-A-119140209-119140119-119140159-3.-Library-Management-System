@@ -95,6 +95,40 @@ def Subscribers(db):
         else :
             print("You inputed the wrong menu, please try again")
 
+def Denda(db,id_borrow,data_type):
+    mycursor = db.cursor()
+    val = [id_borrow]
+    if data_type == "regular":
+        sql = "SELECT DATEDIFF(return_date, borrow_date + INTERVAL '21' DAY) FROM borrowing WHERE borrowing_id = (%s)"
+    elif data_type == "golden":
+        sql = "SELECT DATEDIFF(return_date, borrow_date + INTERVAL '90' DAY) FROM borrowing WHERE borrowing_id = (%s)"
+    
+    mycursor.execute(sql,val)
+    myresult3 = mycursor.fetchone()
+    for i in myresult3:
+        tenggat = i
+        
+    if tenggat > 0 :
+        fee = tenggat*2000
+        print("Returning Success, but you've got fee for",tenggat,"days, about",fee)
+        valFee = (fee, id_borrow)
+        sqlFee = "UPDATE borrowing SET fee = (%s) WHERE borrowing_id = (%s)"
+        mycursor.execute(sqlFee,valFee)
+        db.commit()
+    else :
+        print("Returning Success")
+        fee = 0
+        valFee = (fee, id_borrow)
+        sqlFee = "UPDATE borrowing SET fee = (%s) WHERE borrowing_id = (%s)"
+        mycursor.execute(sqlFee,valFee)
+        db.commit()
+
+    val1 = [id_borrow]
+    sql1 = "SELECT * FROM borrowing WHERE borrowing_id = (%s)"
+    mycursor.execute(sql1, val1)
+    myresult = mycursor.fetchall()
+    print(tabulate(myresult, headers=["borrowing_id","subscriber_id","borrow_date","item_id","return_date","fee"], tablefmt="grid"))
+	
 def Borrowing(db):
     def hasil(a, db):
     	mycursor = db.cursor()
