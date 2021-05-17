@@ -25,8 +25,15 @@ def Items(db):
 
     print(tabulate(myresult, headers=["item_id","library_id","category","title","author","publisher","production_year","copies"], tablefmt="grid"))
 
-def Subscribers(db):
-    print("Insert new subscriber")
+def Show(db):
+    mycursor = db.cursor()
+    mycursor.execute("SELECT * FROM subscribers")
+    myresult = mycursor.fetchall()
+    print(tabulate(myresult, headers=["subscriber_id","type","name","address","phone","email"], tablefmt="grid"))
+
+def Insert(db):
+    mycursor = db.cursor()
+    print("\nInsert data subscriber")
     id_subs = input("Subscriber ID : ")
     tipe = input("Type : ")
     name = input("Name : ")
@@ -35,11 +42,58 @@ def Subscribers(db):
     email = input("Email : ")
 
     val = (id_subs, tipe, name, address, phone, email)
-    mycursor = db.cursor()
     sql = "INSERT INTO subscribers (subscriber_id, type, name, address, phone, email) VALUES (%s,%s,%s,%s,%s,%s)"
     mycursor.execute(sql,val)
     db.commit()
-    print("{} data berhasil disimpan".format(mycursor.rowcount))
+    print("{} data saved".format(mycursor.rowcount))
+
+def Update(db):
+    cursor = db.cursor()
+    Show(db)
+    id_subs = input("pilih id subscriber : ")
+    tipe = input("Type : ")
+    name = input("Name : ")
+    address = input("Address : ")
+    phone = input("Phone : ")
+    email = input("Email : ")
+
+    sql = "UPDATE subscribers SET type=%s, name=%s, address=%s, phone=%s, email=%s WHERE subscriber_id=%s"
+    val = (tipe, name, address, phone, email, id_subs)
+    cursor.execute(sql, val)
+    db.commit()
+    print("{} data changed".format(cursor.rowcount))
+
+def Delete(db):
+    cursor = db.cursor()
+    Show(db)
+    id_subs = input("pilih id subscriber :")
+    sql = "DELETE FROM subscribers WHERE subscriber_id=%s"
+    val = [id_subs]
+    cursor.execute(sql,val)
+    db.commit()
+    print("{} data deleted".format(cursor.rowcount))
+	
+def Subscribers(db):
+    while(True):
+        print("\nSubscribers Menu")
+        print('1. Show data')
+        print('2. Insert data')
+        print('3. Update data')
+        print('4. Delete data')
+        print('5. Quit')
+        pilih = input("Choose Menu : ")
+        if pilih == "1":
+            Show(db)
+        elif pilih == "2":
+            Insert(db)
+        elif pilih == "3":
+            Update(db)
+        elif pilih == "4":
+            Delete(db)
+        elif pilih == "5":
+            break
+        else :
+            print("You inputed the wrong menu, please try again")
 
 def Borrowing(db):
     def hasil(a, db):
@@ -63,7 +117,7 @@ def Borrowing(db):
     mycursor.execute(sql,val)
     db.commit()
     hasil(id_borrow, db)
-    print("{} data berhasil disimpan".format(mycursor.rowcount))
+    print("{} data saved".format(mycursor.rowcount))
 
 def Returning(db):
     def hasil(db, a):
@@ -94,10 +148,10 @@ def Menu(db):
     print('=== WELCOME TO LIBRARY MANAGEMENT SYSTEM ===')
     print("=== Library Menu ===")
     print("1. List of Library")
-    print("2. Register Subscriber")
+    print("2. Subscribers")
     print("3. Borrowing")
     print("4. Returning")
-    print("5. Keluar")
+    print("5. Quit")
     pilih_menu = input("Choose Menu : ")
 
     if pilih_menu == "1":
