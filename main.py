@@ -111,7 +111,7 @@ def Denda(db,id_borrow,data_type):
         
     if tenggat > 0 :
         fee = tenggat*2000
-        print("Returning Success, but you've been late for",tenggat,"day(s), and got fee about",fee)
+        print("Returning Success, but you've been late for",tenggat,"day(s), and got penalty about",fee)
         valFee = (fee, id_borrow)
         sqlFee = "UPDATE borrowing SET fee = (%s) WHERE borrowing_id = (%s)"
         mycursor.execute(sqlFee,valFee)
