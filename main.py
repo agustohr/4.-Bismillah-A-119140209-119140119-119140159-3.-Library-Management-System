@@ -16,6 +16,7 @@ def Library(db):
     print(tabulate(myresult, headers=["library_id","library_name"], tablefmt="grid"))
 
 def Items(db):
+    print("Enter library ID to show item(s)")
     pilih = int(input("Library ID : "))
     mycursor = db.cursor()
     sql = "SELECT * FROM items WHERE library_id=%s"
@@ -35,7 +36,7 @@ def Insert(db):
     mycursor = db.cursor()
     print("\nInsert data subscriber")
     id_subs = input("Subscriber ID : ")
-    tipe = input("Type : ")
+    tipe = input("Type (regular/golden): ")
     name = input("Name : ")
     address = input("Address : ")
     phone = input("Phone : ")
@@ -51,7 +52,7 @@ def Update(db):
     cursor = db.cursor()
     Show(db)
     id_subs = input("Input id subscriber : ")
-    tipe = input("Type : ")
+    tipe = input("Type (regular/golden): ")
     name = input("Name : ")
     address = input("Address : ")
     phone = input("Phone : ")
@@ -76,11 +77,11 @@ def Delete(db):
 def Subscribers(db):
     while(True):
         print("\nSubscribers Menu")
-        print('1. Show data')
-        print('2. Insert data')
-        print('3. Update data')
-        print('4. Delete data')
-        print('5. Quit')
+        print('1. Show Data')
+        print('2. Insert Data')
+        print('3. Update Data')
+        print('4. Delete Data')
+        print('5. Back to Main Menu')
         pilih = input("Choose Menu [1-5] : ")
         if pilih == "1":
             Show(db)
@@ -110,7 +111,7 @@ def Denda(db,id_borrow,data_type):
         
     if tenggat > 0 :
         fee = tenggat*2000
-        print("Returning Success, but you've got fee for",tenggat,"days, about",fee)
+        print("Returning Success, but you've been late for",tenggat,"day(s), and got fee about",fee)
         valFee = (fee, id_borrow)
         sqlFee = "UPDATE borrowing SET fee = (%s) WHERE borrowing_id = (%s)"
         mycursor.execute(sqlFee,valFee)
@@ -136,7 +137,7 @@ def Borrowing(db):
     myresult = mycursor.fetchall()
     print(tabulate(myresult, headers=["borrowing_id","subscriber_id","borrow_date","item_id","return_date","fee"], tablefmt="grid"))
 
-    print("\nInsert data borrowing")
+    print("\nInsert data of the borrowing item")
     id_borrow = int(input("Borrowing ID : "))
     id_subs = int(input("Subscriber ID : "))
     borrow_date = input("Borrowing date : ")
@@ -165,6 +166,7 @@ def Returning(db):
     myresult = mycursor.fetchall()
     print(tabulate(myresult, headers=["borrowing_id","subscriber_id","borrow_date","item_id","return_date","fee"], tablefmt="grid"))
 
+    print("Insert data of the returning item")
     id_subs = int(input("Subscriber ID : ")) 
     id_borrow = int(input("Borrowing ID : "))
     return_date = input("Returning date : ")
@@ -199,12 +201,13 @@ def Returning(db):
 
 def Menu(db):
     print('=== WELCOME TO LIBRARY MANAGEMENT SYSTEM ===')
-    print("=== Library Menu ===")
-    print("1. List of Library")
+    print("\n=== Library Menu ===")
+    print("1. List of Library and Items")
     print("2. Subscribers")
-    print("3. Borrowing")
-    print("4. Returning")
-    print("5. Quit")
+    print("3. Borrow Item")
+    print("4. Return Item")
+    print("5. Exit")
+    print("\nChoose [1] Before If You Want to Borrow The Item")
     pilih_menu = input("Choose Menu [1-5] : ")
 
     if pilih_menu == "1":
