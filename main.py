@@ -160,29 +160,42 @@ def Borrowing(db):
     print(tabulate(myresult, headers=["borrowing_id","subscriber_id","borrow_date","item_id","return_date","fee"], tablefmt="grid"))
 
 def Returning(db):
-    def hasil(db, a):
-        mycursor = db.cursor()
-        val = [a]
-        sql = "SELECT DATEDIFF(return_date, borrow_date) FROM borrowing WHERE borrowing_id = (%s)"
-        mycursor.execute(sql, val)
-        myresult = mycursor.fetchall()
-	print(tabulate(myresult, headers=["overdue 'day(s)'"], tablefmt="grid"))
-	
+    mycursor = db.cursor()
+    mycursor.execute("SELECT * FROM borrowing")
+    myresult = mycursor.fetchall()
+    print(tabulate(myresult, headers=["borrowing_id","subscriber_id","borrow_date","item_id","return_date","fee"], tablefmt="grid"))
+
+    id_subs = int(input("Subscriber ID : ")) 
     id_borrow = int(input("Borrowing ID : "))
     return_date = input("Returning date : ")
-    mycursor = db.cursor()
     val = (return_date, id_borrow)
     sql = "UPDATE borrowing SET return_date = (%s) WHERE borrowing_id = (%s)"
-    mycursor.execute(sql, val)
+    mycursor.execute(sql,val)
     db.commit()
-    hasil(db, id_borrow)
-    print("{} item returned\n".format(mycursor.rowcount))
+    print("{} data saved".format(mycursor.rowcount))
+
+    valIdt = [id_borrow]
+    sqlIdt = "SELECT item_id FROM borrowing WHERE borrowing_id = %s"
+    mycursor.execute(sqlIdt,valIdt)
+    resultId = mycursor.fetchone()
+    for i in resultId:
+        item_id = i
+
+    valIdb = [item_id]
+    sqlCop = "UPDATE items SET copies = copies + 1 WHERE item_id = (%s)"
+    mycursor.execute(sqlCop,valIdb)
+    db.commit()
     
-    # if val == 'regular' :
-    #     tgl1 = borrow_date.dd()
-    #     tgl1 + 
-    
-    # elif val == 'golden' :
+    valsub = [id_subs]
+    sqlsub = "SELECT type FROM subscribers WHERE subscriber_id = %s"
+    mycursor.execute(sqlsub,valsub)
+    myresultsub = mycursor.fetchone()
+    data_type = []
+    for i in myresultsub:
+        data_type.append(i)
+    data_type = ''.join(data_type)
+
+    Denda(db,id_borrow,data_type)
 
 def Menu(db):
     print('=== WELCOME TO LIBRARY MANAGEMENT SYSTEM ===')
