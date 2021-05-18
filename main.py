@@ -130,28 +130,34 @@ def Denda(db,id_borrow,data_type):
     print(tabulate(myresult, headers=["borrowing_id","subscriber_id","borrow_date","item_id","return_date","fee"], tablefmt="grid"))
 	
 def Borrowing(db):
-    def hasil(a, db):
-    	mycursor = db.cursor()
-    	val1 = [a]
-        sql1 = "SELECT item_id, library_id, title FROM items NATURAL JOIN borrowing WHERE borrowing_id = (%s)"
-        mycursor.execute(sql1, val1)
-        myresult = mycursor.fetchall()
-        print("Anda meminjam: ")
-        print(tabulate(myresult, headers=["item_id", "library_id", "title"], tablefmt="grid"))
-	
-    print("Insert data borrowing")
+    Show(db)
+    mycursor = db.cursor()
+    mycursor.execute("SELECT * FROM borrowing")
+    myresult = mycursor.fetchall()
+    print(tabulate(myresult, headers=["borrowing_id","subscriber_id","borrow_date","item_id","return_date","fee"], tablefmt="grid"))
+
+    print("\nInsert data borrowing")
     id_borrow = int(input("Borrowing ID : "))
     id_subs = int(input("Subscriber ID : "))
     borrow_date = input("Borrowing date : ")
     item_id = input("Item id : ")
     
-    mycursor = db.cursor()
     val = (id_borrow, id_subs, item_id, borrow_date)
     sql = "INSERT INTO borrowing (borrowing_id, subscriber_id, item_id, borrow_date) VALUES (%s, %s, %s, %s)"
     mycursor.execute(sql,val)
     db.commit()
-    hasil(id_borrow, db)
     print("{} data saved".format(mycursor.rowcount))
+
+    valIdb = [item_id]
+    sqlCop = "UPDATE items SET copies = copies - 1 WHERE item_id = (%s)"
+    mycursor.execute(sqlCop,valIdb)
+    db.commit()
+
+    val1 = [id_borrow]
+    sql1 = "SELECT * FROM borrowing WHERE borrowing_id = (%s)"
+    mycursor.execute(sql1, val1)
+    myresult = mycursor.fetchall()
+    print(tabulate(myresult, headers=["borrowing_id","subscriber_id","borrow_date","item_id","return_date","fee"], tablefmt="grid"))
 
 def Returning(db):
     def hasil(db, a):
