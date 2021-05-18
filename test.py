@@ -50,7 +50,7 @@ def Insert(db):
 def Update(db):
     cursor = db.cursor()
     Show(db)
-    id_subs = input("pilih id subscriber : ")
+    id_subs = input("Input id subscriber : ")
     tipe = input("Type : ")
     name = input("Name : ")
     address = input("Address : ")
@@ -66,7 +66,7 @@ def Update(db):
 def Delete(db):
     cursor = db.cursor()
     Show(db)
-    id_subs = input("pilih id subscriber :")
+    id_subs = input("Input id subscriber :")
     sql = "DELETE FROM subscribers WHERE subscriber_id=%s"
     val = [id_subs]
     cursor.execute(sql,val)
