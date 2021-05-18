@@ -81,7 +81,7 @@ def Subscribers(db):
         print('3. Update data')
         print('4. Delete data')
         print('5. Quit')
-        pilih = input("Choose Menu : ")
+        pilih = input("Choose Menu [1-5] : ")
         if pilih == "1":
             Show(db)
         elif pilih == "2":
@@ -93,7 +93,7 @@ def Subscribers(db):
         elif pilih == "5":
             pass
         else :
-            print("You inputed the wrong menu, please try again")
+            print("You input the wrong menu, please try again")
 
 def Denda(db,id_borrow,data_type):
     mycursor = db.cursor()
@@ -192,7 +192,7 @@ def Menu(db):
     print("3. Borrowing")
     print("4. Returning")
     print("5. Quit")
-    pilih_menu = input("Choose Menu : ")
+    pilih_menu = input("Choose Menu [1-5] : ")
 
     if pilih_menu == "1":
     	Library(db)
@@ -206,7 +206,7 @@ def Menu(db):
     elif pilih_menu == "5":
         exit()
     else:
-        print("You inputed the wrong menu, please try again")
+        print("You input the wrong menu, please try again")
 
 while(True):
 	Menu(db)
