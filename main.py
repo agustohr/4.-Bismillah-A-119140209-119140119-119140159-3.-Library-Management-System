@@ -413,6 +413,7 @@ def MenuSubs():
     print("3. Borrowing")
     print("4. Returning")
     print("5. Quit")
+    print("\nIf you want to borrow book, please choose menu number 1 first!")
     pilih_menu = input("Choose Menu (1-5) : ")
     os.system("cls")
     if pilih_menu == "1":
@@ -424,8 +425,12 @@ def MenuSubs():
     elif pilih_menu == "2":
         SubsMenu()       
     elif pilih_menu == "3":
+	print("Data Borrowing : ")
         borrow = Borrow(0,0,0,0,0,0)
         borrow.ReadBorrow()
+	print("Data Subscribers : ")
+        subs = SubsCRUD(0,0,0,0,0,0)
+        subs.read()
         print("\nInsert Borrowing Data")
         id_borrow = int(input("Borrowing ID : "))
         id_subs = int(input("Subscriber ID : "))
