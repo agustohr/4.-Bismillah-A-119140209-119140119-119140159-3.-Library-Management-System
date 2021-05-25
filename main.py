@@ -260,3 +260,145 @@ def SubsMenuAdmin():
             break
         else :
             print("You input the wrong menu, please try again")
+
+class Borrow(ConnectSql):
+    def __init__(self,id_borrow,id_subs,borrow_date,item_id,return_date,fee):
+        self.__id_borrow    = id_borrow
+        self.__id_subs      = id_subs
+        self.__borrow_date  = borrow_date
+        self.__item_id      = item_id      
+        self.__return_date  = return_date 
+        self.__fee          = fee      
+        super().__init__()
+        super().createConnection
+        self.__db = self.createConnection
+
+    def Denda(self,data_type):
+        mycursor = self.__db.cursor()
+        val = [self.__id_borrow]
+        if data_type == "regular":
+            sql = "SELECT DATEDIFF(return_date, borrow_date + INTERVAL '21' DAY) FROM borrowing WHERE borrowing_id = (%s)"
+        elif data_type == "golden":
+            sql = "SELECT DATEDIFF(return_date, borrow_date + INTERVAL '90' DAY) FROM borrowing WHERE borrowing_id = (%s)"
+        
+        mycursor.execute(sql,val)
+        myresult3 = mycursor.fetchone()
+        for i in myresult3:
+            tenggat = i
+            
+        if tenggat > 0 :
+            self.__fee = tenggat*2000
+            print("Returning Success, but you've been late for",tenggat,"day(s) and have to pay fine about",self.__fee)
+            valFee = (self.__fee, self.__id_borrow)
+            sqlFee = "UPDATE borrowing SET fee = (%s) WHERE borrowing_id = (%s)"
+            mycursor.execute(sqlFee,valFee)
+            self.__db.commit()
+        else :
+            print("Returning Success")
+            self.__fee = 0
+            valFee = (self.__fee, self.__id_borrow)
+            sqlFee = "UPDATE borrowing SET fee = (%s) WHERE borrowing_id = (%s)"
+            mycursor.execute(sqlFee,valFee)
+            self.__db.commit()
+
+        val1 = [self.__id_borrow]
+        sql1 = "SELECT * FROM borrowing WHERE borrowing_id = (%s)"
+        mycursor.execute(sql1, val1)
+        myresult = mycursor.fetchall()
+        print(tabulate(myresult, headers=["borrowing_id","subscriber_id","borrow_date","item_id","return_date","fee"], tablefmt="grid"))
+
+    def Borrowing(self):
+        mycursor = self.__db.cursor()
+        val = (self.__id_borrow, self.__id_subs, self.__borrow_date, self.__item_id)
+        sql = "INSERT INTO borrowing (borrowing_id, subscriber_id, borrow_date, item_id) VALUES (%s, %s, %s, %s)"
+        mycursor.execute(sql,val)
+        self.__db.commit()
+        print("{} data saved".format(mycursor.rowcount))
+
+        #copies -1
+        valIdb = [self.__item_id]
+        sqlCop = "UPDATE items SET copies = copies - 1 WHERE item_id = (%s)"
+        mycursor.execute(sqlCop,valIdb)
+        self.__db.commit()
+
+        val1 = [self.__id_borrow]
+        sql1 = "SELECT * FROM borrowing WHERE borrowing_id = (%s)"
+        mycursor.execute(sql1, val1)
+        myresult = mycursor.fetchall()
+        print(tabulate(myresult, headers=["borrowing_id","subscriber_id","borrow_date","item_id","return_date","fee"], tablefmt="grid"))
+
+    def ReturnDate(self):
+        mycursor = self.__db.cursor()
+        val = (self.__return_date, self.__id_borrow)
+        sql = "UPDATE borrowing SET return_date = (%s) WHERE borrowing_id = (%s)"
+        mycursor.execute(sql,val)
+        self.__db.commit()
+        print("{} data saved".format(mycursor.rowcount))
+
+        #ngambil item_id
+        valIdt = [self.__id_borrow]
+        sqlIdt = "SELECT item_id FROM borrowing WHERE borrowing_id = %s"
+        mycursor.execute(sqlIdt,valIdt)
+        resultId = mycursor.fetchone()
+        for i in resultId:
+            item_id = i
+
+        #copies +1
+        valIdb = [self.__item_id]
+        sqlCop = "UPDATE items SET copies = copies + 1 WHERE item_id = (%s)"
+        mycursor.execute(sqlCop,valIdb)
+        self.__db.commit()
+        
+        #ngambil type
+        valsub = [self.__id_subs]
+        sqlsub = "SELECT type FROM subscribers WHERE subscriber_id = %s"
+        mycursor.execute(sqlsub,valsub)
+        myresultsub = mycursor.fetchone()
+        data_type = []
+        for i in myresultsub:
+            data_type.append(i)
+        data_type = ''.join(data_type)
+
+        self.Denda(data_type)
+
+    def ReadBorrow(self):
+        mycursor = self.__db.cursor()
+        mycursor.execute("SELECT * FROM borrowing")
+        myresult = mycursor.fetchall()
+        print(tabulate(myresult, headers=["borrowing_id","subscriber_id","borrow_date","item_id","return_date","fee"], tablefmt="grid"))
+
+    def DeleteBorrow(self):
+        mycursor = self.__db.cursor()
+        mycursor.execute ("DELETE FROM borrowing WHERE borrowing_id = %s", (self.__id_borrow,))
+        self.__db.commit()
+        print(mycursor.rowcount, "record deleted.")
+
+    def OverDue(self):
+        mycursor = self.__db.cursor()
+        mycursor.execute("SELECT * FROM borrowing WHERE fee > 0")
+        myresult = mycursor.fetchall()
+        print(tabulate(myresult, headers=["borrowing_id","subscriber_id","borrow_date","item_id","return_date","fee"], tablefmt="grid"))
+
+
+def BorrowMenuAdmin():
+    while(True):
+        print("\nBorrowing Menu")
+        print('1. Show data')
+        print('2. Delete data')
+        print('3. Quit')
+        pilih = input("Choose Menu (1-3): ")
+        if pilih == "1":
+            borrow = Borrow(0,0,0,0,0,0)
+            borrow.ReadBorrow()
+        elif pilih == "2":
+            borrow = Borrow(0,0,0,0,0,0)
+            borrow.ReadBorrow()
+            print("Delete Borrowing Data")
+            id_borrow = input('Search by borrowing ID to delete :')
+            borrow = Borrow(id_borrow,0,0,0,0,0)
+            borrow.DeleteBorrow()
+        elif pilih == "3":
+            os.system("cls")
+            break
+        else :
+            print("You input the wrong menu, please try again")	
