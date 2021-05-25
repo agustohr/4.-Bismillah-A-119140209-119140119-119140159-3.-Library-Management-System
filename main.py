@@ -402,3 +402,100 @@ def BorrowMenuAdmin():
             break
         else :
             print("You input the wrong menu, please try again")	
+
+def MenuSubs():
+    print("\n=== Library Menu ===")
+    print("1. List of Library and Items")
+    print("2. Subscribers")
+    print("3. Borrowing")
+    print("4. Returning")
+    print("5. Quit")
+    pilih_menu = input("Choose Menu (1-5) : ")
+    os.system("cls")
+    if pilih_menu == "1":
+        item = showItems(0,0,0,0,0,0,0,0,0)
+        item.Library()
+        idLbr = int(input("Library ID : "))
+        item = showItems(idLbr,0,0,0,0,0,0,0,0)
+        item.ItemsById()
+    elif pilih_menu == "2":
+        SubsMenu()       
+    elif pilih_menu == "3":
+        borrow = Borrow(0,0,0,0,0,0)
+        borrow.ReadBorrow()
+        print("\nInsert Borrowing Data")
+        id_borrow = int(input("Borrowing ID : "))
+        id_subs = int(input("Subscriber ID : "))
+        borrow_date = input("Borrowing date : ")
+        item_id = input("Item ID : ")
+        borrow = Borrow(id_borrow,id_subs,borrow_date,item_id,0,0)
+        borrow.Borrowing()
+    elif pilih_menu == "4":
+        borrow = Borrow(0,0,0,0,0,0)
+        borrow.ReadBorrow()
+        id_subs = int(input("Subscriber ID : ")) 
+        id_borrow = int(input("Borrowing ID : "))
+        return_date = input("Returning date : ")
+        returning = Borrow(id_borrow,id_subs,0,0,return_date,0)
+        returning.ReturnDate()
+    elif pilih_menu == "5":
+        login()
+    else:
+        print("You input the wrong menu, please try again")
+
+def MenuAdmin():
+    print("\n=== Library Admin Menu ===")
+    print("1. Items")
+    print("2. Subscriber")
+    print("3. Borrowing")
+    print("4. Report Overdue")
+    print("5. Quit")
+    pilih_menu = input("Choose Menu (1-5) : ")
+    os.system("cls")
+    if pilih_menu == "1":
+        ItemsMenu()       
+    elif pilih_menu == "2":
+        SubsMenuAdmin()     
+    elif pilih_menu == "3":
+        BorrowMenuAdmin()
+    elif pilih_menu == "4":
+        report = Borrow(0,0,0,0,0,0)
+        report.OverDue()
+    elif pilih_menu == "5":
+        login()
+    else:
+        print("You input the wrong menu, please try again")
+
+def login():
+    print('\n=== WELCOME TO LIBRARY MANAGEMENT SYSTEM ===')
+    print("Login As : ")
+    print("1. Admin")
+    print("2. Subscriber")
+    print("3. Quit")
+    pilih = input("Choose Menu (1-3) : ")
+    os.system("cls")
+    if pilih == '1':
+        while(True):
+            usser = input("Username : ")
+            password = input("Password : ")
+            if usser == "admin":
+                if password == "admin123":
+                    while (True):
+                        MenuAdmin()
+                else:
+                    print("Password incorrect, please try again")
+            else:
+                print("User incorrect, please try again")
+        
+    elif pilih == '2':
+        while(True):
+            MenuSubs()
+    elif pilih == '3':
+        print("Thank you")
+        exit()
+    else:
+        print("You input the wrong menu, please try again")
+        login()
+
+while(True):
+    login()
