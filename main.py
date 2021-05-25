@@ -2,12 +2,24 @@ import mysql.connector as mysql
 import os
 from tabulate import tabulate
 
-db = mysql.connect(
-    host='localhost',
-    user='root',
-    password='',
-    database='library_management_system'
-)
+class ConnectSql:
+    def __init__(self):
+        self.__localhost     = "localhost"
+        self.__username      = "root"
+        self.__password      = ""
+        self.__database_name = "library_management_system"
+        self.createConnection
+    
+    @property
+    def createConnection(self):
+        db = mysql.connect(
+          host     = self.__localhost,
+          user     = self.__username,
+          passwd   = self.__password,
+          database = self.__database_name
+        )
+        return db
+
 def Library(db):
     mycursor = db.cursor()
     mycursor.execute("SELECT * FROM library")
