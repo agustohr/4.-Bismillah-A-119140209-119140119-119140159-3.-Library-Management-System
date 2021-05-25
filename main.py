@@ -20,71 +20,122 @@ class ConnectSql:
         )
         return db
 
-def Library(db):
-    mycursor = db.cursor()
-    mycursor.execute("SELECT * FROM library")
-    myresult = mycursor.fetchall()
+class showItems(ConnectSql):
+    def __init__(self,idLbr,item_id,library_id,category,title,author,publisher,production_year,copies):
+        self.__idLbr            = idLbr
+        self.__item_id          = item_id 
+        self.__library_id       = library_id
+        self.__category         = category
+        self.__title            = title
+        self.__author           = author
+        self.__publisher        = publisher
+        self.__production_year  = production_year
+        self.__copies           = copies
+        super().__init__()
+        super().createConnection
+        self.__db = self.createConnection
 
-    print(tabulate(myresult, headers=["library_id","library_name"], tablefmt="grid"))
+    def Library(self):
+        mycursor = self.__db.cursor()
+        mycursor.execute("SELECT * FROM library")
+        myresult = mycursor.fetchall()
+        print(tabulate(myresult, headers=["library_id","library_name"], tablefmt="grid"))
 
-def Items(db):
-    print("Enter library ID to show item(s)")
-    pilih = int(input("Library ID : "))
-    mycursor = db.cursor()
-    sql = "SELECT * FROM items WHERE library_id=%s"
-    val = [pilih]
-    mycursor.execute(sql,val)
-    myresult = mycursor.fetchall()
+    def ItemsById(self):
+        mycursor = self.__db.cursor()
+        sql = "SELECT * FROM items WHERE library_id=%s"
+        val = [self.__idLbr]
+        mycursor.execute(sql,val)
+        myresult = mycursor.fetchall()
+        print(tabulate(myresult, headers=["item_id","library_id","category","title","author","publisher","production_year","copies"], tablefmt="grid"))
 
-    print(tabulate(myresult, headers=["item_id","library_id","category","title","author","publisher","production_year","copies"], tablefmt="grid"))
+    def ReadItems(self):
+        mycursor = self.__db.cursor()
+        mycursor.execute("SELECT * FROM items")
+        myresult = mycursor.fetchall()
+        print(tabulate(myresult, headers=["item_id","library_id","category","title","author","publisher","production_year","copies"], tablefmt="grid"))
 
-def Show(db):
-    mycursor = db.cursor()
-    mycursor.execute("SELECT * FROM subscribers")
-    myresult = mycursor.fetchall()
-    print(tabulate(myresult, headers=["subscriber_id","type","name","address","phone","email"], tablefmt="grid"))
+    def CreateItems(self):
+        mycursor = self.__db.cursor()
+        val = (self.__item_id, self.__library_id, self.__category, self.__title, self.__author, self.__publisher, self.__production_year, self.__copies)
+        mycursor.execute("INSERT INTO items (item_id, library_id, category, title, author, publisher, production_year, copies) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)", val)
+        self.__db.commit()
 
-def Insert(db):
-    mycursor = db.cursor()
-    print("\nInsert data subscriber")
-    id_subs = input("Subscriber ID : ")
-    tipe = input("Type (regular/golden): ")
-    name = input("Name : ")
-    address = input("Address : ")
-    phone = input("Phone : ")
-    email = input("Email : ")
+        print(mycursor.rowcount, "record inserted.")
 
-    val = (id_subs, tipe, name, address, phone, email)
-    sql = "INSERT INTO subscribers (subscriber_id, type, name, address, phone, email) VALUES (%s,%s,%s,%s,%s,%s)"
-    mycursor.execute(sql,val)
-    db.commit()
-    print("{} data saved".format(mycursor.rowcount))
+    def UpdateItems(self):
+        mycursor = self.__db.cursor()
+        val = (self.__library_id,self.__category,self.__title,self.__author,self.__publisher,self.__production_year,self.__copies,self.__item_id)
+        mycursor.execute ("UPDATE items SET library_id=%s, category=%s, title=%s, author=%s, publisher=%s, production_year=%s, copies=%s WHERE item_id=%s ", val)
+        self.__db.commit()
 
-def Update(db):
-    cursor = db.cursor()
-    Show(db)
-    id_subs = input("Input id subscriber : ")
-    tipe = input("Type (regular/golden): ")
-    name = input("Name : ")
-    address = input("Address : ")
-    phone = input("Phone : ")
-    email = input("Email : ")
+        print(mycursor.rowcount, "record updated.")
 
-    sql = "UPDATE subscribers SET type=%s, name=%s, address=%s, phone=%s, email=%s WHERE subscriber_id=%s"
-    val = (tipe, name, address, phone, email, id_subs)
-    cursor.execute(sql, val)
-    db.commit()
-    print("{} data changed".format(cursor.rowcount))
+    def DeleteItems(self):
+        mycursor = self.__db.cursor()
+        mycursor.execute ("DELETE FROM items WHERE item_id = %s", (self.__item_id,))
+        self.__db.commit()
 
-def Delete(db):
-    cursor = db.cursor()
-    Show(db)
-    id_subs = input("Input id subscriber :")
-    sql = "DELETE FROM subscribers WHERE subscriber_id=%s"
-    val = [id_subs]
-    cursor.execute(sql,val)
-    db.commit()
-    print("{} data deleted".format(cursor.rowcount))
+        print(mycursor.rowcount, "record deleted.")
+	
+def ItemsMenu():
+    while(True):
+        print("\nItems Menu")
+        print('1. Show data')
+        print('2. Insert data')
+        print('3. Update data')
+        print('4. Delete data')
+        print('5. Quit')
+        pilih = input("Choose Menu (1-5): ")
+
+        if pilih == "1":
+            item = showItems(0,0,0,0,0,0,0,0,0)
+            item.ReadItems()
+
+        elif pilih == "2":
+            item = showItems(0,0,0,0,0,0,0,0,0)
+            item.ReadItems()
+            print("Insert Items Data")
+            item_id = input("Item ID : ")
+            library_id = input("Library ID : ")
+            category = input("Category : ")
+            title = input("Title : ")
+            author = input("Author : ")
+            publisher = input("Publisher : ")
+            production_year = input("Production year : ")
+            copies = input("Copies : ")
+            itemC = showItems(0,item_id,library_id,category,title,author,publisher,production_year,copies)
+            itemC.CreateItems()
+            
+        elif pilih == "3":
+            item = showItems(0,0,0,0,0,0,0,0,0)
+            item.ReadItems()
+            print("Update Items Data")
+            item_id = input("Search by item ID : ")
+            print("Edit")
+            library_id = input("Library ID : ")
+            category = input("Category : ")
+            title = input("Title : ")
+            author = input("Author : ")
+            publisher = input("Publisher : ")
+            production_year = input("Production year : ")
+            copies = input("Copies : ")
+            itemU = showItems(0,item_id,library_id,category,title,author,publisher,production_year,copies)
+            itemU.UpdateItems()
+
+        elif pilih == "4":
+            item = showItems(0,0,0,0,0,0,0,0,0)
+            item.ReadItems()
+            print("Delete Items Data")
+            item_id = input('Search by item ID to delete :')
+            itemD = showItems(0,item_id,0,0,0,0,0,0,0)
+            itemD.DeleteItems()
+
+        elif pilih == "5":
+            os.system("cls")
+            break
+        else :
+            print("You input the wrong menu, please try again")
 	
 def Subscribers(db):
     while(True):
