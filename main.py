@@ -137,155 +137,126 @@ def ItemsMenu():
         else :
             print("You input the wrong menu, please try again")
 	
-def Subscribers(db):
+class SubsCRUD(ConnectSql):
+    def __init__(self,id_subs,tipe,name,address,phone,email):
+        self.__id_subs      = id_subs
+        self.__tipe         = tipe
+        self.__name         = name
+        self.__address      = address
+        self.__phone        = phone
+        self.__email        = email        
+        super().__init__()
+        super().createConnection
+        self.__db = self.createConnection
+
+    def create(self):
+        cursor = self.__db.cursor()
+        val = (self.__id_subs, self.__tipe, self.__name, self.__address, self.__phone, self.__email)
+        cursor.execute("INSERT INTO subscribers (subscriber_id, type, name, address, phone, email) VALUES (%s,%s,%s,%s,%s,%s)", val)
+        self.__db.commit()
+
+        print(cursor.rowcount, "record inserted.")
+
+    def read(self):
+        cursor = self.__db.cursor()
+        cursor.execute("SELECT * FROM subscribers")
+        myresult = cursor.fetchall()
+
+        print(tabulate(myresult, headers=["subscriber_id","type","name","address","phone","email"], tablefmt="grid"))
+
+    def update(self):
+        cursor = self.__db.cursor()
+        val = (self.__tipe, self.__name, self.__address, self.__phone, self.__email, self.__id_subs)
+        cursor.execute ("UPDATE subscribers SET type=%s, name=%s, address=%s, phone=%s, email=%s WHERE subscriber_id=%s ", val)
+        self.__db.commit()
+
+        print(cursor.rowcount, "record updated.")
+
+    def delete(self):
+        cursor = self.__db.cursor()
+        cursor.execute ("DELETE FROM subscribers WHERE subscriber_id = %s", (self.__id_subs,))
+        self.__db.commit()
+
+        print(cursor.rowcount, "record deleted.")
+
+def SubsMenu():
     while(True):
         print("\nSubscribers Menu")
-        print('1. Show Data')
-        print('2. Insert Data')
-        print('3. Update Data')
-        print('4. Delete Data')
-        print('5. Back to Main Menu')
-        pilih = input("Choose Menu [1-5] : ")
+        print('1. Show data')
+        print('2. Insert data')
+        print('3. Update data')
+        print('4. Delete data')
+        print('5. Quit')
+        pilih = input("Choose Menu (1-5): ")
         if pilih == "1":
-            Show(db)
+            subs = SubsCRUD(0,0,0,0,0,0)
+            subs.read()
         elif pilih == "2":
-            Insert(db)
+            subs = SubsCRUD(0,0,0,0,0,0)
+            subs.read()
+            print("Insert Subscriber Data")
+            id_subs = input("Subscriber ID : ")
+            print("\ngolden : golden subscribers can borrow for three months")
+            print("regular : regular subscribers can borrow for three weeks")
+            
+            while(True):
+                tipe = input("Type (regular/golden): ")
+                if (tipe == "regular") or (tipe == "golden"):
+                    break
+                else:
+                    print("You input the wrong type, please try again")
+            name = input("Name : ")
+            address = input("Address : ")
+            phone = input("Phone : ")
+            email = input("Email : ")
+            subs = SubsCRUD(id_subs,tipe,name,address,phone,email)
+            subs.create()
+            
         elif pilih == "3":
-            Update(db)
+            subs = SubsCRUD(0,0,0,0,0,0)
+            subs.read()
+            print("Update Subscriber Data")
+            id_subs = input("Search by ID subscriber : ")
+            print("Edit")
+            tipe = input("Type (regular/golden): ")
+            name = input("Name : ")
+            address = input("Address : ")
+            phone = input("Phone : ")
+            email = input("Email : ")
+            subs = SubsCRUD(id_subs,tipe,name,address,phone,email)
+            subs.update()
         elif pilih == "4":
-            Delete(db)
+            subs = SubsCRUD(0,0,0,0,0,0)
+            subs.read()
+            print("Delete Subscriber Data")
+            id_subs = input('Search by subscriber ID to delete :')
+            subs = SubsCRUD(id_subs,0,0,0,0,0)
+            subs.delete()
         elif pilih == "5":
-            pass
+            os.system("cls")
+            break
         else :
             print("You input the wrong menu, please try again")
 
-def Denda(db,id_borrow,data_type):
-    mycursor = db.cursor()
-    val = [id_borrow]
-    if data_type == "regular":
-        sql = "SELECT DATEDIFF(return_date, borrow_date + INTERVAL '21' DAY) FROM borrowing WHERE borrowing_id = (%s)"
-    elif data_type == "golden":
-        sql = "SELECT DATEDIFF(return_date, borrow_date + INTERVAL '90' DAY) FROM borrowing WHERE borrowing_id = (%s)"
-    
-    mycursor.execute(sql,val)
-    myresult3 = mycursor.fetchone()
-    for i in myresult3:
-        tenggat = i
-        
-    if tenggat > 0 :
-        fee = tenggat*2000
-        print("Returning Success, but you've been late for",tenggat,"day(s), and got penalty about",fee)
-        valFee = (fee, id_borrow)
-        sqlFee = "UPDATE borrowing SET fee = (%s) WHERE borrowing_id = (%s)"
-        mycursor.execute(sqlFee,valFee)
-        db.commit()
-    else :
-        print("Returning Success")
-        fee = 0
-        valFee = (fee, id_borrow)
-        sqlFee = "UPDATE borrowing SET fee = (%s) WHERE borrowing_id = (%s)"
-        mycursor.execute(sqlFee,valFee)
-        db.commit()
-
-    val1 = [id_borrow]
-    sql1 = "SELECT * FROM borrowing WHERE borrowing_id = (%s)"
-    mycursor.execute(sql1, val1)
-    myresult = mycursor.fetchall()
-    print(tabulate(myresult, headers=["borrowing_id","subscriber_id","borrow_date","item_id","return_date","fee"], tablefmt="grid"))
-	
-def Borrowing(db):
-    Show(db)
-    mycursor = db.cursor()
-    mycursor.execute("SELECT * FROM borrowing")
-    myresult = mycursor.fetchall()
-    print(tabulate(myresult, headers=["borrowing_id","subscriber_id","borrow_date","item_id","return_date","fee"], tablefmt="grid"))
-
-    print("\nInsert data of the borrowing item")
-    id_borrow = int(input("Borrowing ID : "))
-    id_subs = int(input("Subscriber ID : "))
-    borrow_date = input("Borrowing date : ")
-    item_id = input("Item id : ")
-    
-    val = (id_borrow, id_subs, item_id, borrow_date)
-    sql = "INSERT INTO borrowing (borrowing_id, subscriber_id, item_id, borrow_date) VALUES (%s, %s, %s, %s)"
-    mycursor.execute(sql,val)
-    db.commit()
-    print("{} data saved".format(mycursor.rowcount))
-
-    valIdb = [item_id]
-    sqlCop = "UPDATE items SET copies = copies - 1 WHERE item_id = (%s)"
-    mycursor.execute(sqlCop,valIdb)
-    db.commit()
-
-    val1 = [id_borrow]
-    sql1 = "SELECT * FROM borrowing WHERE borrowing_id = (%s)"
-    mycursor.execute(sql1, val1)
-    myresult = mycursor.fetchall()
-    print(tabulate(myresult, headers=["borrowing_id","subscriber_id","borrow_date","item_id","return_date","fee"], tablefmt="grid"))
-
-def Returning(db):
-    mycursor = db.cursor()
-    mycursor.execute("SELECT * FROM borrowing")
-    myresult = mycursor.fetchall()
-    print(tabulate(myresult, headers=["borrowing_id","subscriber_id","borrow_date","item_id","return_date","fee"], tablefmt="grid"))
-
-    print("Insert data of the returning item")
-    id_subs = int(input("Subscriber ID : ")) 
-    id_borrow = int(input("Borrowing ID : "))
-    return_date = input("Returning date : ")
-    val = (return_date, id_borrow)
-    sql = "UPDATE borrowing SET return_date = (%s) WHERE borrowing_id = (%s)"
-    mycursor.execute(sql,val)
-    db.commit()
-    print("{} data saved".format(mycursor.rowcount))
-
-    valIdt = [id_borrow]
-    sqlIdt = "SELECT item_id FROM borrowing WHERE borrowing_id = %s"
-    mycursor.execute(sqlIdt,valIdt)
-    resultId = mycursor.fetchone()
-    for i in resultId:
-        item_id = i
-
-    valIdb = [item_id]
-    sqlCop = "UPDATE items SET copies = copies + 1 WHERE item_id = (%s)"
-    mycursor.execute(sqlCop,valIdb)
-    db.commit()
-    
-    valsub = [id_subs]
-    sqlsub = "SELECT type FROM subscribers WHERE subscriber_id = %s"
-    mycursor.execute(sqlsub,valsub)
-    myresultsub = mycursor.fetchone()
-    data_type = []
-    for i in myresultsub:
-        data_type.append(i)
-    data_type = ''.join(data_type)
-
-    Denda(db,id_borrow,data_type)
-
-def Menu(db):
-    print('=== WELCOME TO LIBRARY MANAGEMENT SYSTEM ===')
-    print("\n=== Library Menu ===")
-    print("1. List of Library and Items")
-    print("2. Subscribers")
-    print("3. Borrow Item")
-    print("4. Return Item")
-    print("5. Exit")
-    print("\nChoose [1] Before If You Want to Borrow The Item")
-    pilih_menu = input("Choose Menu [1-5] : ")
-
-    if pilih_menu == "1":
-    	Library(db)
-    	Items(db)
-    elif pilih_menu == "2":
-    	Subscribers(db)
-    elif pilih_menu == "3":
-        Borrowing(db)
-    elif pilih_menu == "4":
-        Returning(db)
-    elif pilih_menu == "5":
-        exit()
-    else:
-        print("You input the wrong menu, please try again")
-
-while(True):
-	Menu(db)
+def SubsMenuAdmin():
+    while(True):
+        print("\nSubscribers Menu")
+        print('1. Show data')
+        print('2. Delete data')
+        print('3. Quit')
+        pilih = input("Choose Menu (1-3): ")
+        if pilih == "1":
+            subs = SubsCRUD(0,0,0,0,0,0)
+            subs.read()
+        elif pilih == "2":
+            subs = SubsCRUD(0,0,0,0,0,0)
+            subs.read()
+            print("Delete Subscriber Data")
+            id_subs = input('Search by subscriber ID to delete :')
+            subs = SubsCRUD(id_subs,0,0,0,0,0)
+            subs.delete()
+        elif pilih == "3":
+            os.system("cls")
+            break
+        else :
+            print("You input the wrong menu, please try again")
