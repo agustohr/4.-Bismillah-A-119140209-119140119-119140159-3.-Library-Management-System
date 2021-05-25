@@ -90,7 +90,10 @@ def ItemsMenu():
 
         if pilih == "1":
             item = showItems(0,0,0,0,0,0,0,0,0)
-            item.ReadItems()
+            item.Library()
+            idLbr = int(input("Library ID : "))
+            item = showItems(idLbr,0,0,0,0,0,0,0,0)
+            item.ItemsById()
 
         elif pilih == "2":
             item = showItems(0,0,0,0,0,0,0,0,0)
